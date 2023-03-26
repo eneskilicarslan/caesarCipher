@@ -33,6 +33,28 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.addWidget(self.cipherText)
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
+        self.horizontalLayout_8 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_8.setSizeConstraint(QtWidgets.QLayout.SetMinimumSize)
+        self.horizontalLayout_8.setObjectName("horizontalLayout_8")
+        self.label_3 = QtWidgets.QLabel(self.widget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_3.sizePolicy().hasHeightForWidth())
+        self.label_3.setSizePolicy(sizePolicy)
+        self.label_3.setObjectName("label_3")
+        self.horizontalLayout_8.addWidget(self.label_3)
+        self.key = QtWidgets.QSpinBox(self.widget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.key.sizePolicy().hasHeightForWidth())
+        self.key.setSizePolicy(sizePolicy)
+        self.key.setMaximum(29)
+        self.key.setStepType(QtWidgets.QAbstractSpinBox.AdaptiveDecimalStepType)
+        self.key.setObjectName("key")
+        self.horizontalLayout_8.addWidget(self.key)
+        self.horizontalLayout_5.addLayout(self.horizontalLayout_8)
         self.cipherButton = QtWidgets.QPushButton(self.widget)
         self.cipherButton.setObjectName("cipherButton")
         self.horizontalLayout_5.addWidget(self.cipherButton)
@@ -134,18 +156,32 @@ class Ui_MainWindow(object):
 
         """ GUI RELATED """
         self.cipherButton.clicked.connect(self.cipher)
+        self.MainWindow = MainWindow
+        self.analyzeCipherButton.clicked.connect(self.analyze)
+        self.pushButton_2.clicked.connect(self.analyze) # TODO: safe rework here!
+
 
     def cipher(self):
         """ciphering"""
-        self.cipherView.setPixmap(QtGui.QPixmap("cp.jpeg"))
         textToCipher = self.cipherText.toPlainText()
+        keyToShift = self.key.value()
+
         self.cipherText.clear()
-        self.cipherText.insertPlainText(funcs.caesarCipher(textToCipher, 1))
+        self.cipherText.insertPlainText(funcs.caesarCipher(textToCipher, keyToShift))
+
+    def analyze(self):
+        sender = self.MainWindow.sender()
+        print(sender.objectName())
+        if sender.objectName() == "analyzeCipherButton":
+            self.cipherView.setPixmap(QtGui.QPixmap("cp.jpeg"))
+        else:
+            self.analyzeView.setPixmap(QtGui.QPixmap("cp.jpeg"))
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label_2.setText(_translate("MainWindow", "Kriptolanacak Metin"))
+        self.label_3.setText(_translate("MainWindow", "Anahtar"))
         self.cipherButton.setText(_translate("MainWindow", "Kriptola"))
         self.analyzeCipherButton.setText(_translate("MainWindow", "Analiz Et"))
         self.label.setText(_translate("MainWindow", "Analiz Metni"))
