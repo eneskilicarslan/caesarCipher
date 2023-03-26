@@ -1,8 +1,15 @@
+import collections
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 import funcs
 
 
 class Ui_MainWindow(object):
+    def __init__(self):
+        self.MainWindow = None
+        self.freqAnalysis = None
+        self.freqCipher = None
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1294, 1096)
@@ -154,12 +161,16 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+        # TODO: text size increment on QPlainTextEdit
+        # TODO: delete spacer between decipher and analysis, insert a seperator line
+
         """ GUI RELATED """
         self.cipherButton.clicked.connect(self.cipher)
         self.MainWindow = MainWindow
+        self.freqCipher = collections.OrderedDict
+        self.freqAnalysis = collections.OrderedDict
         self.analyzeCipherButton.clicked.connect(self.analyze)
         self.pushButton_2.clicked.connect(self.analyze) # TODO: safe rework here!
-
 
     def cipher(self):
         """ciphering"""
@@ -171,11 +182,12 @@ class Ui_MainWindow(object):
 
     def analyze(self):
         sender = self.MainWindow.sender()
-        print(sender.objectName())
         if sender.objectName() == "analyzeCipherButton":
-            self.cipherView.setPixmap(QtGui.QPixmap("cp.jpeg"))
+            self.freqCipher = funcs.freqAnalysis(self.cipherText.toPlainText(), "1.png")
+            self.cipherView.setPixmap(QtGui.QPixmap("1.png"))
         else:
-            self.analyzeView.setPixmap(QtGui.QPixmap("cp.jpeg"))
+            self.freqAnalysis = funcs.freqAnalysis(self.analysisText.toPlainText(), "2.png")
+            self.analyzeView.setPixmap(QtGui.QPixmap("2.png"))
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
