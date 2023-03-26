@@ -1,4 +1,4 @@
-from output import Ui_MainWindow
+from gui import Ui_MainWindow
 import sys
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton
