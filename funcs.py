@@ -2,11 +2,11 @@ import collections as col
 import matplotlib.pyplot as plt
 
 
-def caesarCipher(textToCipher, shift):
+def caesarCipher(textToCipher, key):
 
     """ CAESAR CIPHERING
     textToCipher: a simple text to be ciphered
-    shift: variable to shift through alphabet
+    key: variable to key through alphabet
     """
 
     cipheredText = ""
@@ -16,7 +16,7 @@ def caesarCipher(textToCipher, shift):
         if textToCipher[i] == " ":
             cipheredText += " "
         else:
-            cipheredText += chr((ord(textToCipher[i]) + shift - 97) % 26 + 97)
+            cipheredText += chr((ord(textToCipher[i]) + key - 97) % 26 + 97)
 
     return cipheredText
 

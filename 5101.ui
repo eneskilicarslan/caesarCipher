@@ -44,6 +44,42 @@
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_5">
                    <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_8">
+                     <property name="sizeConstraint">
+                      <enum>QLayout::SetMinimumSize</enum>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="label_3">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="text">
+                        <string>Anahtar</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSpinBox" name="key">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="maximum">
+                        <number>29</number>
+                       </property>
+                       <property name="stepType">
+                        <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
                     <widget class="QPushButton" name="cipherButton">
                      <property name="text">
                       <string>Kriptola</string>
