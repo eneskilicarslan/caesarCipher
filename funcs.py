@@ -10,10 +10,11 @@ def caesarCipher(textToCipher, key):
     :param key: variable to shift through the alphabet
     :return: ciphered text using key
     """
-    # TODO: number ciphering
+    # TODO: number and special char ciphering
     cipheredText = ""
     textToCipher.lower()
 
+    # TODO: space char affects here!
     for i in range(len(textToCipher)):
         if textToCipher[i] == " ":
             cipheredText += " "
@@ -23,13 +24,44 @@ def caesarCipher(textToCipher, key):
     return cipheredText
 
 
+def decipherZipped(textToDecipher, decipherDict):
+    """
+    deciphering according to decipherDict
+    :param textToDecipher:
+    :param decipherDict:
+    :return: deciphered Text
+    """
+    # TODO: space char affects here!
+    decipheredText = ""
+    for i in range(len(textToDecipher)):
+        if textToDecipher[i] == " ":
+            decipheredText += " "
+        else:
+            decipheredText += decipherDict[textToDecipher[i]]
+
+    return decipheredText
+
+def compareFreqs(cipherFreq, analysisFreq):
+    """
+    comparing two analysis between each other to zip
+    :param cipherFreq:
+    :param analysisFreq:
+    :return: zipped dictionary
+    """
+    decipherDict = {}
+
+    for (char1, char2) in zip(analysisFreq, cipherFreq):
+        decipherDict[char2] = char1
+
+    return decipherDict
+
 def freqAnalysis(textToAnalyze, path):
     """
     letter frequency analysis
     :param textToAnalyze: freq analysis will be done over this var
     :return: sorted freq dictionary
     """
-
+    # TODO: will space character be added? if not, create an exception here
     textToAnalyze.lower()
     letterCounts = Counter(textToAnalyze.rstrip())
     sortedLetterCounts = col.OrderedDict(sorted(letterCounts.items(), key=lambda t: t[1], reverse=True))

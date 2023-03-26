@@ -171,6 +171,7 @@ class Ui_MainWindow(object):
         self.freqAnalysis = collections.OrderedDict
         self.analyzeCipherButton.clicked.connect(self.analyze)
         self.pushButton_2.clicked.connect(self.analyze) # TODO: safe rework here!
+        self.decipherButton.clicked.connect(self.decipher)
 
     def cipher(self):
         """ciphering"""
@@ -188,6 +189,13 @@ class Ui_MainWindow(object):
         else:
             self.freqAnalysis = funcs.freqAnalysis(self.analysisText.toPlainText(), "2.png")
             self.analyzeView.setPixmap(QtGui.QPixmap("2.png"))
+
+    def decipher(self):
+        decipheredResult = funcs.decipherZipped(self.cipherText.toPlainText(), funcs.compareFreqs(self.freqCipher, self.freqAnalysis))
+        self.decipheredText.clear()
+        self.decipheredText.insertPlainText(decipheredResult)
+
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
