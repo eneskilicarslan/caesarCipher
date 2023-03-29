@@ -2,6 +2,8 @@ import collections as col
 from collections import Counter
 import matplotlib.pyplot as plt
 
+alphabet = "abcçdefgğhıijklmnoöpqrsştuüvwxyz0123456789"
+
 
 def caesarCipher(textToCipher, key):
     """
@@ -10,16 +12,18 @@ def caesarCipher(textToCipher, key):
     :param key: variable to shift through the alphabet
     :return: ciphered text using key
     """
-    # TODO: number and special char ciphering
-    cipheredText = ""
-    textToCipher.lower()
 
-    # TODO: space char affects here!
+    cipheredText = ""
+    textToCipher = textToCipher.lower()
+
     for i in range(len(textToCipher)):
         if textToCipher[i] == " ":
             cipheredText += " "
+        elif textToCipher[i] in alphabet:
+            idx = (alphabet.index(textToCipher[i]) + key) % len(alphabet)
+            cipheredText += alphabet[idx]
         else:
-            cipheredText += chr((ord(textToCipher[i]) + key - 97) % 26 + 97)
+            cipheredText += textToCipher[i]
 
     return cipheredText
 
@@ -31,15 +35,18 @@ def decipherZipped(textToDecipher, decipherDict):
     :param decipherDict:
     :return: deciphered Text
     """
-    # TODO: space char affects here!
+
     decipheredText = ""
     for i in range(len(textToDecipher)):
         if textToDecipher[i] == " ":
             decipheredText += " "
+        elif textToDecipher[i] not in alphabet:
+            decipheredText += textToDecipher[i]
         else:
             decipheredText += decipherDict[textToDecipher[i]]
 
     return decipheredText
+
 
 def compareFreqs(cipherFreq, analysisFreq):
     """
@@ -55,6 +62,7 @@ def compareFreqs(cipherFreq, analysisFreq):
 
     return decipherDict
 
+
 def freqAnalysis(textToAnalyze, path):
     """
     letter frequency analysis
@@ -62,8 +70,9 @@ def freqAnalysis(textToAnalyze, path):
     :return: sorted freq dictionary
     """
     # TODO: will space character be added? if not, create an exception here
-    textToAnalyze.lower()
+    textToAnalyze = textToAnalyze.lower()
     letterCounts = Counter(textToAnalyze.rstrip())
+    del letterCounts[' ']
     sortedLetterCounts = col.OrderedDict(sorted(letterCounts.items(), key=lambda t: t[1], reverse=True))
     toGraph(sortedLetterCounts).savefig(path, bbox_inches='tight', transparent=True)
 
@@ -78,3 +87,8 @@ def toGraph(sortedLetterCounts):
     ax = plt.gca()
     ax.set_facecolor('#F0F0F0')
     return plt
+
+
+def intervalBetween(string1, string2):
+    return sum(string1[i] != string2[i] for i in range(len(string1)))
+

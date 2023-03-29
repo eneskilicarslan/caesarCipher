@@ -9,6 +9,9 @@ class Ui_MainWindow(object):
         self.MainWindow = None
         self.freqAnalysis = None
         self.freqCipher = None
+        self.nonCipherInput = ""
+        self.analyze1 = 0
+        self.analyze2 = 0
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -36,6 +39,9 @@ class Ui_MainWindow(object):
         self.label_2.setObjectName("label_2")
         self.verticalLayout_5.addWidget(self.label_2)
         self.cipherText = QtWidgets.QPlainTextEdit(self.widget)
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.cipherText.setFont(font)
         self.cipherText.setObjectName("cipherText")
         self.verticalLayout_5.addWidget(self.cipherText)
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
@@ -74,7 +80,7 @@ class Ui_MainWindow(object):
         self.cipherView.setMinimumSize(QtCore.QSize(622, 369))
         self.cipherView.setMaximumSize(QtCore.QSize(622, 369))
         self.cipherView.setText("")
-        self.cipherView.setPixmap(QtGui.QPixmap("dido.jpg"))
+        self.cipherView.setPixmap(QtGui.QPixmap("key.jpeg"))
         self.cipherView.setScaledContents(True)
         self.cipherView.setObjectName("cipherView")
         self.horizontalLayout_3.addWidget(self.cipherView)
@@ -95,6 +101,9 @@ class Ui_MainWindow(object):
         self.label.setObjectName("label")
         self.verticalLayout_4.addWidget(self.label)
         self.analysisText = QtWidgets.QPlainTextEdit(self.widget)
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.analysisText.setFont(font)
         self.analysisText.setObjectName("analysisText")
         self.verticalLayout_4.addWidget(self.analysisText)
         self.pushButton_2 = QtWidgets.QPushButton(self.widget)
@@ -105,15 +114,18 @@ class Ui_MainWindow(object):
         self.analyzeView.setMinimumSize(QtCore.QSize(622, 369))
         self.analyzeView.setMaximumSize(QtCore.QSize(622, 369))
         self.analyzeView.setText("")
-        self.analyzeView.setPixmap(QtGui.QPixmap("kop.jpeg"))
+        self.analyzeView.setPixmap(QtGui.QPixmap("key.jpeg"))
         self.analyzeView.setScaledContents(True)
         self.analyzeView.setObjectName("analyzeView")
         self.horizontalLayout_4.addWidget(self.analyzeView)
         self.verticalLayout_2.addLayout(self.horizontalLayout_4)
         self.horizontalLayout_2.addLayout(self.verticalLayout_2)
         self.verticalLayout.addWidget(self.widget)
-        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
-        self.verticalLayout.addItem(spacerItem)
+        self.line_2 = QtWidgets.QFrame(self.centralwidget)
+        self.line_2.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_2.setObjectName("line_2")
+        self.verticalLayout.addWidget(self.line_2)
         self.decipherButton = QtWidgets.QPushButton(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -131,18 +143,29 @@ class Ui_MainWindow(object):
         self.decipheredText.setSizePolicy(sizePolicy)
         self.decipheredText.setMinimumSize(QtCore.QSize(0, 40))
         self.decipheredText.setMaximumSize(QtCore.QSize(16777215, 140))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.decipheredText.setFont(font)
         self.decipheredText.setObjectName("decipheredText")
         self.verticalLayout.addWidget(self.decipheredText)
         self.horizontalLayout_7 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_7.setObjectName("horizontalLayout_7")
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_7.addItem(spacerItem1)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_7.addItem(spacerItem)
         self.performanceScore = QtWidgets.QLineEdit(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.performanceScore.sizePolicy().hasHeightForWidth())
+        self.performanceScore.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        self.performanceScore.setFont(font)
         self.performanceScore.setAlignment(QtCore.Qt.AlignCenter)
         self.performanceScore.setObjectName("performanceScore")
         self.horizontalLayout_7.addWidget(self.performanceScore)
-        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_7.addItem(spacerItem2)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_7.addItem(spacerItem1)
         self.verticalLayout.addLayout(self.horizontalLayout_7)
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_6.setObjectName("horizontalLayout_6")
@@ -161,23 +184,22 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-        # TODO: text size increment on QPlainTextEdit
-        # TODO: delete spacer between decipher and analysis, insert a seperator line
-
         """ GUI RELATED """
         self.cipherButton.clicked.connect(self.cipher)
         self.MainWindow = MainWindow
         self.freqCipher = collections.OrderedDict
         self.freqAnalysis = collections.OrderedDict
         self.analyzeCipherButton.clicked.connect(self.analyze)
-        self.pushButton_2.clicked.connect(self.analyze) # TODO: safe rework here!
+        self.pushButton_2.clicked.connect(self.analyze)  # TODO: safe rework here!
         self.decipherButton.clicked.connect(self.decipher)
+        self.decipherButton.setEnabled(False)
 
     def cipher(self):
         """ciphering"""
         textToCipher = self.cipherText.toPlainText()
         keyToShift = self.key.value()
 
+        self.nonCipherInput = textToCipher  # variable that holds initial input to criticise score
         self.cipherText.clear()
         self.cipherText.insertPlainText(funcs.caesarCipher(textToCipher, keyToShift))
 
@@ -186,16 +208,28 @@ class Ui_MainWindow(object):
         if sender.objectName() == "analyzeCipherButton":
             self.freqCipher = funcs.freqAnalysis(self.cipherText.toPlainText(), "1.png")
             self.cipherView.setPixmap(QtGui.QPixmap("1.png"))
+            if self.freqCipher:
+                self.analyze1 = 1
         else:
             self.freqAnalysis = funcs.freqAnalysis(self.analysisText.toPlainText(), "2.png")
             self.analyzeView.setPixmap(QtGui.QPixmap("2.png"))
+            if self.freqAnalysis:
+                self.analyze2 = 1
+
+        if self.analyze1 and self.analyze2:
+            self.decipherButton.setDisabled(False)
 
     def decipher(self):
-        decipheredResult = funcs.decipherZipped(self.cipherText.toPlainText(), funcs.compareFreqs(self.freqCipher, self.freqAnalysis))
+        decipheredResult = funcs.decipherZipped(self.cipherText.toPlainText(),
+                                                funcs.compareFreqs(self.freqCipher, self.freqAnalysis))
         self.decipheredText.clear()
         self.decipheredText.insertPlainText(decipheredResult)
+        self.score()
 
-
+    def score(self):
+        difference = funcs.intervalBetween(self.nonCipherInput, self.decipheredText.toPlainText())
+        performance = 100 * (len(self.nonCipherInput) - difference) / len(self.nonCipherInput)
+        self.performanceScore.setText("%" + performance.__str__())
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
