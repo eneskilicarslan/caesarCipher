@@ -1,6 +1,8 @@
 import collections
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QFileDialog
+
 import funcs
 
 
@@ -15,7 +17,7 @@ class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1294, 1096)
+        MainWindow.resize(1294, 1000)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -106,9 +108,15 @@ class Ui_MainWindow(object):
         self.analysisText.setFont(font)
         self.analysisText.setObjectName("analysisText")
         self.verticalLayout_4.addWidget(self.analysisText)
+        self.horizontalLayout_9 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_9.setObjectName("horizontalLayout_9")
         self.pushButton_2 = QtWidgets.QPushButton(self.widget)
         self.pushButton_2.setObjectName("pushButton_2")
-        self.verticalLayout_4.addWidget(self.pushButton_2)
+        self.fromTxtButton = QtWidgets.QPushButton(self.widget)
+        self.fromTxtButton.setObjectName("fromTxtButton")
+        self.horizontalLayout_9.addWidget(self.fromTxtButton)
+        self.horizontalLayout_9.addWidget(self.pushButton_2)
+        self.verticalLayout_4.addLayout(self.horizontalLayout_9)
         self.horizontalLayout_4.addLayout(self.verticalLayout_4)
         self.analyzeView = QtWidgets.QLabel(self.widget)
         self.analyzeView.setMinimumSize(QtCore.QSize(622, 369))
@@ -193,6 +201,7 @@ class Ui_MainWindow(object):
         self.pushButton_2.clicked.connect(self.analyze)  # TODO: safe rework here!
         self.decipherButton.clicked.connect(self.decipher)
         self.decipherButton.setEnabled(False)
+        self.fromTxtButton.clicked.connect(self.loadFromFile)
 
     def cipher(self):
         """ciphering"""
@@ -228,17 +237,27 @@ class Ui_MainWindow(object):
 
     def score(self):
         difference = funcs.intervalBetween(self.nonCipherInput, self.decipheredText.toPlainText())
-        performance = 100 * (len(self.nonCipherInput) - difference) / len(self.nonCipherInput)
+        performance = 100 * (len(self.nonCipherInput) - difference) / len(self.decipheredText.toPlainText())
         self.performanceScore.setText("%" + performance.__str__())
+
+    def loadFromFile(self):
+        name = QFileDialog.getOpenFileName(None, "Load Text", "", "Txt Files (*.txt)")
+        if name[0]:
+            str = open(name[0], 'r', encoding="utf-8").read()
+            self.analysisText.clear()
+            self.analysisText.insertPlainText(str)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "CAESAR"))
         self.label_2.setText(_translate("MainWindow", "Kriptolanacak Metin"))
         self.label_3.setText(_translate("MainWindow", "Anahtar"))
         self.cipherButton.setText(_translate("MainWindow", "Kriptola"))
         self.analyzeCipherButton.setText(_translate("MainWindow", "Analiz Et"))
         self.label.setText(_translate("MainWindow", "Analiz Metni"))
         self.pushButton_2.setText(_translate("MainWindow", "Analiz Et"))
+        self.fromTxtButton.setText(_translate("MainWindow", "txt\'den Yükle"))
         self.decipherButton.setText(_translate("MainWindow", "ÇÖZ"))
         self.performanceScore.setPlaceholderText(_translate("MainWindow", "Performans Skoru"))
+
+
