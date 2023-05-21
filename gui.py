@@ -14,10 +14,11 @@ class Ui_MainWindow(object):
         self.nonCipherInput = ""
         self.analyze1 = 0
         self.analyze2 = 0
+        self.seed = 0
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1294, 1000)
+        MainWindow.resize(1294, 1096)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -73,6 +74,16 @@ class Ui_MainWindow(object):
         self.cipherButton = QtWidgets.QPushButton(self.widget)
         self.cipherButton.setObjectName("cipherButton")
         self.horizontalLayout_5.addWidget(self.cipherButton)
+        self.label_4 = QtWidgets.QLabel(self.widget)
+        self.label_4.setObjectName("label_4")
+        self.horizontalLayout_5.addWidget(self.label_4)
+        self.spinBox = QtWidgets.QSpinBox(self.widget)
+        self.spinBox.setMaximum(99999)
+        self.spinBox.setObjectName("spinBox")
+        self.horizontalLayout_5.addWidget(self.spinBox)
+        self.blockCipher = QtWidgets.QPushButton(self.widget)
+        self.blockCipher.setObjectName("blockCipher")
+        self.horizontalLayout_5.addWidget(self.blockCipher)
         self.analyzeCipherButton = QtWidgets.QPushButton(self.widget)
         self.analyzeCipherButton.setObjectName("analyzeCipherButton")
         self.horizontalLayout_5.addWidget(self.analyzeCipherButton)
@@ -112,10 +123,10 @@ class Ui_MainWindow(object):
         self.horizontalLayout_9.setObjectName("horizontalLayout_9")
         self.pushButton_2 = QtWidgets.QPushButton(self.widget)
         self.pushButton_2.setObjectName("pushButton_2")
+        self.horizontalLayout_9.addWidget(self.pushButton_2)
         self.fromTxtButton = QtWidgets.QPushButton(self.widget)
         self.fromTxtButton.setObjectName("fromTxtButton")
         self.horizontalLayout_9.addWidget(self.fromTxtButton)
-        self.horizontalLayout_9.addWidget(self.pushButton_2)
         self.verticalLayout_4.addLayout(self.horizontalLayout_9)
         self.horizontalLayout_4.addLayout(self.verticalLayout_4)
         self.analyzeView = QtWidgets.QLabel(self.widget)
@@ -134,6 +145,8 @@ class Ui_MainWindow(object):
         self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_2.setObjectName("line_2")
         self.verticalLayout.addWidget(self.line_2)
+        self.horizontalLayout_10 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_10.setObjectName("horizontalLayout_10")
         self.decipherButton = QtWidgets.QPushButton(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -141,7 +154,11 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.decipherButton.sizePolicy().hasHeightForWidth())
         self.decipherButton.setSizePolicy(sizePolicy)
         self.decipherButton.setObjectName("decipherButton")
-        self.verticalLayout.addWidget(self.decipherButton)
+        self.horizontalLayout_10.addWidget(self.decipherButton)
+        self.blockDecipherButton = QtWidgets.QPushButton(self.centralwidget)
+        self.blockDecipherButton.setObjectName("blockDecipherButton")
+        self.horizontalLayout_10.addWidget(self.blockDecipherButton)
+        self.verticalLayout.addLayout(self.horizontalLayout_10)
         self.decipheredText = QtWidgets.QPlainTextEdit(self.centralwidget)
         self.decipheredText.setEnabled(True)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
@@ -193,6 +210,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         """ GUI RELATED """
+        self.blockCipher.clicked.connect(self.cipherADV_ECB)
         self.cipherButton.clicked.connect(self.cipher)
         self.MainWindow = MainWindow
         self.freqCipher = collections.OrderedDict
@@ -203,6 +221,15 @@ class Ui_MainWindow(object):
         self.decipherButton.setEnabled(False)
         self.fromTxtButton.clicked.connect(self.loadFromFile)
 
+    def cipherADV_ECB(self):
+        """ciphering"""
+        textToCipher = self.cipherText.toPlainText()
+        boyut = self.spinBox.value()
+        self.nonCipherInput = textToCipher
+
+        self.cipherText.clear()
+        self.cipherText.insertPlainText(funcs.blockCipher(funcs.randomBinaryGenerator(boyut), textToCipher, boyut))
+
     def cipher(self):
         """ciphering"""
         textToCipher = self.cipherText.toPlainText()
@@ -211,6 +238,8 @@ class Ui_MainWindow(object):
         self.nonCipherInput = textToCipher  # variable that holds initial input to criticise score
         self.cipherText.clear()
         self.cipherText.insertPlainText(funcs.caesarCipher(textToCipher, keyToShift))
+        print(funcs.blockCipher("01010101", textToCipher, 8))
+        funcs.blockDecipher("01010101", funcs.blockCipher("01010101", textToCipher, 8))
 
     def analyze(self):
         sender = self.MainWindow.sender()
@@ -249,15 +278,17 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "CAESAR"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label_2.setText(_translate("MainWindow", "Kriptolanacak Metin"))
-        self.label_3.setText(_translate("MainWindow", "Anahtar"))
-        self.cipherButton.setText(_translate("MainWindow", "Kriptola"))
+        self.label_3.setText(_translate("MainWindow", "Sezar Anahtar"))
+        self.cipherButton.setText(_translate("MainWindow", "Sezar Kriptola"))
+        self.label_4.setText(_translate("MainWindow", "Blok Boyutu (bit)"))
+        self.blockCipher.setText(_translate("MainWindow", "Blok Kriptola"))
         self.analyzeCipherButton.setText(_translate("MainWindow", "Analiz Et"))
         self.label.setText(_translate("MainWindow", "Analiz Metni"))
         self.pushButton_2.setText(_translate("MainWindow", "Analiz Et"))
         self.fromTxtButton.setText(_translate("MainWindow", "txt\'den Yükle"))
-        self.decipherButton.setText(_translate("MainWindow", "ÇÖZ"))
+        self.decipherButton.setText(_translate("MainWindow", "SEZAR ÇÖZ"))
+        self.blockDecipherButton.setText(_translate("MainWindow", "BLOK ÇÖZ"))
         self.performanceScore.setPlaceholderText(_translate("MainWindow", "Performans Skoru"))
-
 
