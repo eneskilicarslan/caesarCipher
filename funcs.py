@@ -107,20 +107,24 @@ def blockCipher(key, texttoCipher, blockSize):
     print("key: " + key)
     print("after2: " + cipheredBlocks.__str__())
 
-    return binary_string_to_string(unquantize_blocks(cipheredBlocks))
+    return unquantize_blocks(cipheredBlocks)
 
 
-def blockDecipher(key, cipheredBlocks):
+def blockDecipher(key, cipheredText, blockSize):
     """
     BLOCK DECIPHERING
     :param key:
-    :param cipheredBlocks:
+    :param cipheredText:
     :return:
     """
+
+    cipheredBlocks = quantize_binary_string(cipheredText, blockSize)
     decipheredBlocks = xor_key_and_blocks(key, cipheredBlocks)
     print("deciphered: " + decipheredBlocks.__str__())
 
-    postProcessADV_ECB(decipheredBlocks, len(key))
+    decipheredBlocks = postProcessADV_ECB(decipheredBlocks, len(key))
+
+    return binary_string_to_string(unquantize_blocks(decipheredBlocks))
 
 
 def preProcessADV_ECB(string, blockSize):
@@ -135,11 +139,12 @@ def preProcessADV_ECB(string, blockSize):
     print("location vector: " + locationVector)
     print("string binary form: " + string_to_binary_string(string))
     quantized = quantize_binary_string(string_to_binary_string(string), blockSize-1)
-    print("qunatized: " + quantized.__str__())
+    print("quantized: " + quantized.__str__())
 
     for i in range(len(quantized)):
         for j in range(blockSize):
-            if (blockSize == len(quantized[i])) and (locationVector[j] == "1"): #TODO: location vector traversal is a cost, think of location vector as location itself not index
+            if (len(quantized[i]) == blockSize-1) and locationVector[j] == "1": #TODO: location vector traversal is a cost, think of location vector as location itself not index
+                print("data vector: " + dataVector[i])
                 quantized[i] = add_bit_to_block(quantized[i], j, dataVector[i])
 
     print("after adding: " + quantized.__str__())
@@ -164,7 +169,7 @@ def postProcessADV_ECB(blocks, blockSize):
 
     for i in range(len(blocks)):
         for j in range(blockSize):
-            if locationVector[j] == "1":
+            if (blockSize == len(blocks[i])) and (locationVector[j] == "1"):
                 blocks[i] = remove_bit_from_block(blocks[i], j)
 
     print("after removing: " + blocks.__str__())
@@ -248,13 +253,12 @@ def binary_string_to_string(binary_string):
     :param binary_string:
     :return:
     """
-    string = ""
-    for i in range(0, len(binary_string), 8):
-        binary_segment = binary_string[i:i+8]
-        decimal_value = int(binary_segment, 2)
-        character = chr(decimal_value)
-        string += character
-    return string
+    # Convert binary string to bytes
+    binary_bytes = int(binary_string, 2).to_bytes((len(binary_string) + 7) // 8, 'big')
+
+    # Decode bytes to UTF-8 string
+    utf8_string = binary_bytes.decode('utf-8', errors='ignore')
+    return utf8_string
 
 def randomBinaryGenerator(length):
     """

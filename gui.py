@@ -15,6 +15,7 @@ class Ui_MainWindow(object):
         self.analyze1 = 0
         self.analyze2 = 0
         self.seed = 0
+        self.blockText = ""
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -219,6 +220,8 @@ class Ui_MainWindow(object):
         self.pushButton_2.clicked.connect(self.analyze)  # TODO: safe rework here!
         self.decipherButton.clicked.connect(self.decipher)
         self.decipherButton.setEnabled(False)
+        self.blockDecipherButton.clicked.connect(self.blockDecipherADV_ECB)
+        self.blockDecipherButton.setEnabled(False)
         self.fromTxtButton.clicked.connect(self.loadFromFile)
 
     def cipherADV_ECB(self):
@@ -227,8 +230,11 @@ class Ui_MainWindow(object):
         boyut = self.spinBox.value()
         self.nonCipherInput = textToCipher
 
+        self.seed = funcs.randomBinaryGenerator(boyut)
         self.cipherText.clear()
-        self.cipherText.insertPlainText(funcs.blockCipher(funcs.randomBinaryGenerator(boyut), textToCipher, boyut))
+
+        self.blockText = funcs.blockCipher(self.seed, textToCipher, boyut)
+        self.cipherText.insertPlainText(self.blockText)
 
     def cipher(self):
         """ciphering"""
@@ -238,8 +244,6 @@ class Ui_MainWindow(object):
         self.nonCipherInput = textToCipher  # variable that holds initial input to criticise score
         self.cipherText.clear()
         self.cipherText.insertPlainText(funcs.caesarCipher(textToCipher, keyToShift))
-        print(funcs.blockCipher("01010101", textToCipher, 8))
-        funcs.blockDecipher("01010101", funcs.blockCipher("01010101", textToCipher, 8))
 
     def analyze(self):
         sender = self.MainWindow.sender()
@@ -256,6 +260,7 @@ class Ui_MainWindow(object):
 
         if self.analyze1 and self.analyze2:
             self.decipherButton.setDisabled(False)
+            self.blockDecipherButton.setDisabled(False)
 
     def decipher(self):
         decipheredResult = funcs.decipherZipped(self.cipherText.toPlainText(),
@@ -263,6 +268,12 @@ class Ui_MainWindow(object):
         self.decipheredText.clear()
         self.decipheredText.insertPlainText(decipheredResult)
         self.score()
+
+    def blockDecipherADV_ECB(self):
+        decipheredResult = funcs.blockDecipher(self.seed, self.blockText, self.spinBox.value())
+        self.decipheredText.clear()
+        self.decipheredText.insertPlainText(decipheredResult)
+        # self.score()
 
     def score(self):
         difference = funcs.intervalBetween(self.nonCipherInput, self.decipheredText.toPlainText())
