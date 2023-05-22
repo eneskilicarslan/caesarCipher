@@ -102,17 +102,28 @@ def blockCipher(key, texttoCipher, blockSize):
     :param blockSize:
     :return:
     """
-    blocks = preProcessADV_ECB(texttoCipher, blockSize)
-    cipheredBlocks = xor_key_and_blocks(key, blocks)
+    blocks = []
+    binaryTexttoCipher = string_to_binary_string(texttoCipher)
+    print("plain text: " + binaryTexttoCipher)
+    for i in range(0, len(binaryTexttoCipher), blockSize*blockSize):
+        preprocessed = preProcessADV_ECB(binaryTexttoCipher[i:i+(blockSize*blockSize)], blockSize)
+        preprocessed = quantize_binary_string(unquantize_blocks(preprocessed), blockSize)
+        blocks.insert(i, xor_key_and_blocks(key, preprocessed))
+    # blocks = preProcessADV_ECB(texttoCipher, blockSize)
+    print("after: " + blocks.__str__())
+    # cipheredBlocks = xor_key_and_blocks(key, blocks)
     print("key: " + key)
-    print("after2: " + cipheredBlocks.__str__())
-
-    return unquantize_blocks(cipheredBlocks)
+    # print("ciphered: " + cipheredBlocks.__str__())
+    result = []
+    for i in range(len(blocks)):
+        result.append(unquantize_blocks(blocks[i]))
+    return unquantize_blocks(result)
 
 
 def blockDecipher(key, cipheredText, blockSize):
     """
     BLOCK DECIPHERING
+    :param blockSize:
     :param key:
     :param cipheredText:
     :return:
@@ -121,10 +132,19 @@ def blockDecipher(key, cipheredText, blockSize):
     cipheredBlocks = quantize_binary_string(cipheredText, blockSize)
     decipheredBlocks = xor_key_and_blocks(key, cipheredBlocks)
     print("deciphered: " + decipheredBlocks.__str__())
+    resultBlocks = []
 
-    decipheredBlocks = postProcessADV_ECB(decipheredBlocks, len(key))
+    for i in range(0, len(decipheredBlocks), blockSize + 3):
+        print(i)
+        resultBlocks.append(postProcessADV_ECB(decipheredBlocks[i:i+(blockSize + 3)], len(key)))
 
-    return binary_string_to_string(unquantize_blocks(decipheredBlocks))
+    # decipheredBlocks = postProcessADV_ECB(decipheredBlocks, len(key))
+    result = []
+    for i in range(len(resultBlocks)):
+        result.append(unquantize_blocks(resultBlocks[i]))
+
+    print(result)
+    return binary_string_to_string(unquantize_blocks(result))
 
 
 def preProcessADV_ECB(string, blockSize):
@@ -133,17 +153,17 @@ def preProcessADV_ECB(string, blockSize):
     :param string: string to be processed
     :param blockSize: block size to be used
     """
+    print("preprocess string->" + string)
     dataVector = randomBinaryGenerator(blockSize)
     locationVector = randomLocationGenerator(blockSize)
     print("random vector: " + dataVector)
     print("location vector: " + locationVector)
-    print("string binary form: " + string_to_binary_string(string))
-    quantized = quantize_binary_string(string_to_binary_string(string), blockSize-1)
+    quantized = quantize_binary_string(string, blockSize) # -1
     print("quantized: " + quantized.__str__())
 
     for i in range(len(quantized)):
         for j in range(blockSize):
-            if (len(quantized[i]) == blockSize-1) and locationVector[j] == "1": #TODO: location vector traversal is a cost, think of location vector as location itself not index
+            if (len(quantized[i]) == blockSize) and locationVector[j] == "1": #TODO: location vector traversal is a cost, think of location vector as location itself not index
                 print("data vector: " + dataVector[i])
                 quantized[i] = add_bit_to_block(quantized[i], j, dataVector[i])
 
@@ -163,13 +183,14 @@ def postProcessADV_ECB(blocks, blockSize):
     dataVector = blocks[0]
     locationVector = blocks[1]
     blocks = blocks[2:]
+    blocks = quantize_binary_string(unquantize_blocks(blocks), blockSize+1)
     print("data vector: " + dataVector)
     print("location vector: " + locationVector)
     print("blocks: " + blocks.__str__())
 
     for i in range(len(blocks)):
         for j in range(blockSize):
-            if (blockSize == len(blocks[i])) and (locationVector[j] == "1"):
+            if (blockSize+1 == len(blocks[i])) and (locationVector[j] == "1"):
                 blocks[i] = remove_bit_from_block(blocks[i], j)
 
     print("after removing: " + blocks.__str__())
