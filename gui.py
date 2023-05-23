@@ -79,6 +79,7 @@ class Ui_MainWindow(object):
         self.label_4.setObjectName("label_4")
         self.horizontalLayout_5.addWidget(self.label_4)
         self.spinBox = QtWidgets.QSpinBox(self.widget)
+        self.spinBox.setMinimum(2)
         self.spinBox.setMaximum(99999)
         self.spinBox.setObjectName("spinBox")
         self.horizontalLayout_5.addWidget(self.spinBox)
